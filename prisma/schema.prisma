@@ -1,0 +1,87 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Artists {
+  id          String   @id @default(cuid())
+  name        String
+  genre       String
+  age         Int?
+  country     String?
+  image       String
+  description String?
+  albums      Albums[]
+}
+
+model Bands {
+  id          String   @id @default(cuid())
+  name        String
+  members     Int
+  genre       String
+  country     String?
+  image       String
+  description String?
+  albums      Albums[]
+}
+
+model Albums {
+  id          String   @id @default(cuid())
+  name        String
+  artistId    String?
+  bandsId     String?
+  songs       Songs[]
+  year        Int?
+  description String?
+  image       String
+  artist      Artists? @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  Band        Bands?   @relation(fields: [bandsId], references: [id], onDelete: Cascade)
+}
+
+model Songs {
+  id      String  @id @default(cuid())
+  name    String
+  url     String
+  albumId String?
+  album   Albums? @relation(fields: [albumId], references: [id], onDelete: Cascade)
+}
+
+model Podcasts {
+  id          String     @id @default(cuid())
+  name        String
+  author      String
+  genre       String
+  country     String?
+  image       String
+  description String
+  episodes    Episodes[]
+}
+
+model Audiobooks {
+  id          String     @id @default(cuid())
+  name        String
+  author      String
+  genre       String
+  country     String?
+  image       String
+  description String
+  episodes    Episodes[]
+}
+
+model Episodes {
+  id          String      @id @default(cuid())
+  name        String
+  podcastId   String?
+  audiobookId String?
+  duration    Int
+  image       String
+  description String
+  year        Int
+  podcast     Podcasts?   @relation(fields: [podcastId], references: [id], onDelete: Cascade)
+  audiobook   Audiobooks? @relation(fields: [audiobookId], references: [id], onDelete: Cascade)
+}
